@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-// import { FeatherModule } from 'angular-feather';
-// import { allIcons } from 'angular-feather/icons';
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+import {WeatherDataService} from '../services/weather-data.service';
 
 @NgModule({
   declarations: [
@@ -11,12 +11,9 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    // FeatherModule.pick(allIcons)
+    HttpClientModule,
   ],
-  exports: [
-    // FeatherModule
-  ],
-  providers: [],
+  providers: [WeatherDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
