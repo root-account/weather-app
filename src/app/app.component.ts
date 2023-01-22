@@ -21,7 +21,11 @@ export class AppComponent {
 
   public weather_data:any = [];
   public selected_weather:any = [];
+  public weather_summary:any = [];
   public selected_location:any = data_sample.city;
+
+  public temp_unit = "C";
+  public location = "Johannesburg";
   
   constructor(
     private _weather_data_service: WeatherDataService,
@@ -55,12 +59,19 @@ export class AppComponent {
 
     // Convert object to array to loop in html
     this.weather_data = Object.values(this.weather_data);
-    this.selected_weather = this.weather_data[0];   
+    this.selected_weather = this.weather_data[0];
 
-    console.log(this.data_sample);
-    console.log(this.weather_data);
-    console.log(this.selected_location);
-    console.log(this.selected_weather);
+
+    this.viewDayWeather(0);
+
+    // console.log(this.data_sample);
+    // console.log(this.weather_data);
+    // console.log(this.selected_location);
+    // console.log(this.selected_weather);
+
+    // this.weather_data.forEach((element:any) => {
+    //     console.log(element);
+    // });
 
     /**
      * END
@@ -88,19 +99,52 @@ export class AppComponent {
 
 
   viewDayWeather(index:any){
+
     this.selected_weather = this.weather_data[index];   
-    console.log(this.selected_weather);
+    this.weather_summary = {
+      'temp':`${this.convertTemparature(this.selected_weather[0].main.temp)} °${this.temp_unit}`,
+      'date': this.selected_weather[0].date,
+      'time': this.selected_weather[0].time,
+      'weekday': this.selected_weather[0].weekday,
+      'humidity': this.selected_weather[0].main.humidity,
+      'wind': `${this.selected_weather[0].wind.speed} km\h`,
+      'location': this.location,
+      'desc': this.selected_weather[0].weather[0].description,
+    }
   }
 
   viewTimeWeather(index:any){
-    this.selected_weather = this.selected_weather[index];   
-    console.log(this.selected_weather);
+    this.weather_summary = {
+      'temp': `${this.convertTemparature(this.selected_weather[index].main.temp)} °${this.temp_unit}`,
+      'date': this.selected_weather[index].date,
+      'time': this.selected_weather[index].time,
+      'weekday': this.selected_weather[index].weekday,
+      'humidity': this.selected_weather[index].main.humidity,
+      'wind': `${this.selected_weather[index].wind.speed} km\h`,
+      'location': this.location,
+      'desc': this.selected_weather[index].weather[0].description,
+    }
+  }
+
+  // Convert temperature
+  convertTemparature(kelvinVal:number){
+    let temperature:number;
+
+    if(this.temp_unit == "C"){
+      temperature = kelvinVal - 273.15;
+    }else if(this.temp_unit == "F"){
+      temperature = (kelvinVal-273.15)*9/5+32;
+    }else{
+      temperature = kelvinVal;
+    }
+
+    return temperature.toFixed(1);
   }
 
 
   // Get all Weather Data
   getAllWeatherData(){
-    this._weather_data_service.getAllWeather("Johannesburg").subscribe({
+    this._weather_data_service.getAllWeather(this.location).subscribe({
       next: (data:any) => {
       
       this.selected_location = data.city;
@@ -126,7 +170,7 @@ export class AppComponent {
       this.weather_data = Object.values(this.weather_data);
 
       // Select the first weather and set as selected
-      this.selected_weather = this.weather_data[0];      
+      this.selected_weather = this.weather_data[0][0];      
 
       },error: error => {
 
