@@ -15,7 +15,6 @@ import { data_sample } from '../shared/constants'
   styleUrls: ['./app.component.scss']
 })
 
-//9c80c8aac29df6c2539bc04d38767669
 export class AppComponent {
   title = 'weather-app';
 
@@ -26,7 +25,7 @@ export class AppComponent {
   public weather_summary:any = [];
 
   public temp_unit = "C";
-  public location = "Johannesburg";
+  public location = "Cape Town";
   public weather_msg = "";
   public weather_bg_image = "";
 
@@ -42,77 +41,38 @@ export class AppComponent {
   constructor(
     private _weather_data_service: WeatherDataService,
     private datePipe: DatePipe,
-    private fB: FormBuilder
   ){ }
+  
 
+  /************************
+   * INIT
+   *************************/
   ngOnInit(): void {
     
     this.getAllWeatherData(this.location);
 
+    // Load data again every 20 minutes
     interval(20000 * 60).subscribe(x => {
       this.getAllWeatherData(this.location);
     });
 
   };
 
-  // Change location
+  /************************
+    * Change location
+  ************************/
   changeLocation(){
-    this.location = this.locationForm.value.locationName;
-
+      this.location = this.locationForm.value.locationName;
     if(this.locationForm.value.locationName == ""){
       alert("Enter a location")
     }else{
       this.getAllWeatherData(this.location);
     }
-  
   }
 
-
-
-  // WEATHERE DATA SIMULATION
-  weatherData(){
-     /*** 
-     *  SIMUMATED DATA TO AVOID CALLING API
-     *  Must comment out for production
-    */
-    // Compile data properly into new array with needed information
-    this.data_sample.list.forEach((item:any) => {
-      this.weather_data.push({
-        'dateTime':item.dt_txt,
-        'date':this.datePipe.transform(item.dt_txt, 'd MMMM y'),
-        'time':this.datePipe.transform(item.dt_txt, 'h:mm a'),
-        'weekday':this.datePipe.transform(item.dt_txt, 'EEEE'),
-        'main':item.main,
-        'weather': item.weather,
-        'wind':item.wind,
-        'clouds': item.clouds
-      })
-
-    });
-      
-    this.weather_data = this.groupBy(this.weather_data, 'date');
-
-    // Convert object to array to loop in html
-    this.weather_data = Object.values(this.weather_data);
-    this.selected_weather = this.weather_data[0];
-
-
-    this.viewTimeWeather(0, 'day');;
-
-    console.log(this.data_sample);
-    console.log(this.weather_data);
-    console.log(this.selected_weather);
-
-    this.weather_data.forEach((element:any) => {
-        console.log(element);
-    });
-
-    /**
-     * END
-     */
-  }
-
-  // Group data by date (Array by key)
+  /**************************************
+    * Group data by date (Array by key)
+  ****************************************/
   groupBy:any = (array:any, key:any) => {
     // Return the end result
     return array.reduce((result:any, currentValue:any) => {
@@ -127,17 +87,17 @@ export class AppComponent {
   };
 
 
-  // When clicking to view specific time
+  /***************************************
+    * When clicking to view specific time
+  ****************************************/
   viewTimeWeather(index:any, type:any){
 
+    // Check if user is clicking on day weather or time weather
     if(type == "day"){
       this.selected_weather = this.weather_data[index];
       index = 0;
     }
-
-    console.log(this.selected_weather);
     
-
     // SET background images based in different conditions
     if(this.selected_weather[index].weather[0].main == "Clear"){
       this.weather_bg_image = 'url(../assets/clear.jpg)';
@@ -189,7 +149,9 @@ export class AppComponent {
     }
   }
 
-  // Convert temperature
+  /************************
+    * Convert temperature
+  ************************/
   convertTemparature(kelvinVal:number){
     let temperature:number;
 
@@ -212,7 +174,9 @@ export class AppComponent {
     return temperature.toFixed(1);
   }
 
-  // Switch temparature unit
+  /************************
+    * Switch temparature unit
+  ************************/
   switchTempUnit(unit:any){
     if(unit == "C"){
       this.temp_unit = "C";
@@ -224,7 +188,9 @@ export class AppComponent {
   }
 
 
+  /*********************** 
   // Recall API on try again
+  ************************/
   refreshPage(location:any){
     this.getAllWeatherData(location);
     this.location = location;
@@ -235,7 +201,9 @@ export class AppComponent {
   }
 
   
+  /*********************** 
   // Get all Weather Data
+  ************************/
   getAllWeatherData(location:any){
     this.has_errors = false;
     this.errors_msg = "";
@@ -247,7 +215,6 @@ export class AppComponent {
     this._weather_data_service.getAllWeather(location).subscribe({
       next: (data:any) => {
       
-
       // Compile data properly into new array with needed information
       data.list.forEach((item:any) => {
         this.weather_data.push({
@@ -278,11 +245,7 @@ export class AppComponent {
       this.errors_msg = "";
       this.still_loading = false;
 
-      console.log(this.weather_data);
-      console.log(this.selected_weather);
-
       },error: error => {
-
 
         this.has_errors = true;
         this.errors_msg = "Something went wrong, please try again. If the error persist contact support on mekgwele@gmail.com";
@@ -292,11 +255,52 @@ export class AppComponent {
           this.errors_msg = "No data found for your search."
         }
         
-
-        
       }
 
     }); //end subscribe get all
   }
+
+    // WEATHERE DATA SIMULATION
+  // weatherData(){
+  //    /*** 
+  //    *  SIMUMATED DATA TO AVOID CALLING API
+  //    *  Must comment out for production
+  //   */
+  //   // Compile data properly into new array with needed information
+  //   this.data_sample.list.forEach((item:any) => {
+  //     this.weather_data.push({
+  //       'dateTime':item.dt_txt,
+  //       'date':this.datePipe.transform(item.dt_txt, 'd MMMM y'),
+  //       'time':this.datePipe.transform(item.dt_txt, 'h:mm a'),
+  //       'weekday':this.datePipe.transform(item.dt_txt, 'EEEE'),
+  //       'main':item.main,
+  //       'weather': item.weather,
+  //       'wind':item.wind,
+  //       'clouds': item.clouds
+  //     })
+
+  //   });
+      
+  //   this.weather_data = this.groupBy(this.weather_data, 'date');
+
+  //   // Convert object to array to loop in html
+  //   this.weather_data = Object.values(this.weather_data);
+  //   this.selected_weather = this.weather_data[0];
+
+
+  //   this.viewTimeWeather(0, 'day');;
+
+  //   console.log(this.data_sample);
+  //   console.log(this.weather_data);
+  //   console.log(this.selected_weather);
+
+  //   this.weather_data.forEach((element:any) => {
+  //       console.log(element);
+  //   });
+
+  //   /**
+  //    * END
+  //    */
+  // }
 
 }

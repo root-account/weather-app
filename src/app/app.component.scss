@@ -190,3 +190,28 @@ body, html, p, h1, h2, h3, h4, h5, h6, span{
 	}
 
 }
+
+@media(max-width: 800px){
+	.week-list{
+		flex-wrap:wrap;
+		li{
+			width: 32%;
+		}
+	}
+
+	.info-side{
+		margin-top: 1rem;
+	}
+
+	.weather-app{
+		padding-top: 1rem !important;
+	}
+
+	.location{
+		margin-bottom: 2.5rem !important;
+	}
+
+	.title{
+		width: 30% !important;
+	}
+}

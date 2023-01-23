@@ -14,16 +14,14 @@ export class WeatherDataService {
   private base_url = "http://api.openweathermap.org/data/2.5";
 
   private api_key = "369eec43839edb457bcd10bae170b463";
-  private location = "Cape town";
   private weather_forecast_url = "";
  
   constructor(private _http: HttpClient) {} 
 
-  // Get all weather
+  /******************************
+    * Get all weather (HTTP service)
+  ******************************/
   getAllWeather(location:any): Observable<any []> { 
-
-    // Check if latitude and longitude a supplied otherwise use the default ones 
-    location ? this.location = location : location = this.location;
 
     // Construct the api call url based on the provide information
     this.weather_forecast_url = this.base_url+"/forecast?q="+location+"&appid="+this.api_key;
@@ -33,7 +31,9 @@ export class WeatherDataService {
     return weather_data;
   }
 
-  // Error handling
+  /************************
+    * Error handling
+  ************************/
   handleError(error: HttpErrorResponse) {
     let errorMessage:any = 'Unknown error!';
     if (error.error instanceof ErrorEvent) {
@@ -48,7 +48,9 @@ export class WeatherDataService {
     return throwError(errorMessage);
   }
 
-  // Exponential backoff retry
+  /******************************
+    * Exponential backoff retry
+  *******************************/
   backoff(maxTries: number, delay: number) {
     return pipe(
       retryWhen(attempts =>
