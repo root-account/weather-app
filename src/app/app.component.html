@@ -100,7 +100,18 @@
         
       
       
-      
+          <!-- WEEKDAY SELECTOR -->
+          <div class="week-container weekdays" *ngIf="weather_data">
+            <ul class="week-list">
+              <li [ngClass]="{'active' : weather[0]?.date == weather_summary?.date}" *ngFor="let weather of weather_data; index as i" (click)="viewTimeWeather(i, 'day')">
+                <img src="http://openweathermap.org/img/wn/{{weather[0].weather[0].icon}}@2x.png" alt="">
+                <span class="day-name">{{weather[0].weekday}}</span>
+                <span class="day-temp">{{convertTemparature(weather[0].main.temp)}}°{{temp_unit}}</span>
+              </li>
+              <div class="clear"></div>
+            </ul>
+          </div>
+
           <!-- TIME SELECTOR -->
           <div class="week-container times" *ngIf="selected_weather">
             <ul class="week-list week-times">
@@ -108,18 +119,6 @@
                 <img src="http://openweathermap.org/img/wn/{{weather?.weather[0].icon}}@2x.png" alt="">
                 <span class="day-name">{{weather?.time}}</span>
                 <span class="day-temp">{{convertTemparature(weather?.main.temp)}}°{{temp_unit}}</span>
-              </li>
-              <div class="clear"></div>
-            </ul>
-          </div>
-      
-          <!-- WEEKDAY SELECTOR -->
-          <div class="week-container" *ngIf="weather_data">
-            <ul class="week-list">
-              <li [ngClass]="{'active' : weather[0]?.date == weather_summary?.date}" *ngFor="let weather of weather_data; index as i" (click)="viewTimeWeather(i, 'day')">
-                <img src="http://openweathermap.org/img/wn/{{weather[0].weather[0].icon}}@2x.png" alt="">
-                <span class="day-name">{{weather[0].weekday}}</span>
-                <span class="day-temp">{{convertTemparature(weather[0].main.temp)}}°{{temp_unit}}</span>
               </li>
               <div class="clear"></div>
             </ul>

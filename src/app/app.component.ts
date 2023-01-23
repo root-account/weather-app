@@ -100,7 +100,7 @@ export class AppComponent {
     
     // SET background images based in different conditions
     if(this.selected_weather[index].weather[0].main == "Clear"){
-      this.weather_bg_image = 'url(../assets/clear.jpg)';
+      this.weather_bg_image = 'url(../assets/clear.jpeg)';
     }else if(this.selected_weather[index].weather[0].main == "Drizzle"){
       this.weather_bg_image = 'url(../assets/drizzle.jpeg)';
     }else if(this.selected_weather[index].weather[0].main == "Rain"){
@@ -142,7 +142,7 @@ export class AppComponent {
       'time': this.selected_weather[index].time,
       'weekday': this.selected_weather[index].weekday,
       'humidity': this.selected_weather[index].main.humidity,
-      'wind': `${this.selected_weather[index].wind.speed} km\h`,
+      'wind': `${(this.selected_weather[index].wind.speed * 3.6).toFixed(1)} km\h`,
       'location': this.location,
       'desc': this.selected_weather[index].weather[0].description,
       'icon': `http://openweathermap.org/img/wn/${this.selected_weather[index].weather[0].icon}@2x.png`,

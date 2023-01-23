@@ -41,9 +41,9 @@ body, html, p, h1, h2, h3, h4, h5, h6, span{
 		transition: all 0.5s ease-in-out;
 		top: 0vh;
 		display: block;
-		background: #0000002e 0% 0% no-repeat padding-box;
+		background: rgb(0 0 0 / 5%) 0% 0% no-repeat padding-box;
 		opacity: 1;
-		backdrop-filter: blur(6px);
+		backdrop-filter: blur(4px);
 		-webkit-backdrop-filter: blur(6px);
 		width: 100vw;
 		z-index: 0;
@@ -144,7 +144,7 @@ body, html, p, h1, h2, h3, h4, h5, h6, span{
 
 			.week-container{
 
-				&.times{
+				&.weekdays{
 					border-bottom: 1px solid rgb(255 255 255 / 25%);
 					padding-bottom: 1rem;
     				margin-bottom: 1rem;
@@ -154,18 +154,26 @@ body, html, p, h1, h2, h3, h4, h5, h6, span{
 					list-style-type: none;
 					padding: 0;
 					display: flex;
+					flex-wrap: wrap;
 					li{
 						cursor: pointer;
 						text-align: center;
 						background-color: transparent;
 						transition: all .3s ease-in-out;
 						margin: 2px;
+						
+						padding: 8px;
 						padding-bottom: 10px;
+						
+						img {
+							width: 80px;
+						}
 						span{
 							display: block;
 
 							&.day-name {
-								font-size: 12px;
+								font-size: 14px;
+    							margin-bottom: 6px;
 							}
 
 							&.day-temp {
