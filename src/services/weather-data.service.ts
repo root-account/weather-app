@@ -11,7 +11,7 @@ import {  throwError, of, pipe, range, timer, zip  } from 'rxjs';
 })
 export class WeatherDataService {
 
-  private base_url = "http://api.openweathermap.org/data/2.5";
+  private base_url = "https://api.openweathermap.org/data/2.5";
 
   private api_key = "369eec43839edb457bcd10bae170b463";
   private weather_forecast_url = "";
