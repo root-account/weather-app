@@ -28,22 +28,23 @@ export class WeatherDataService {
     // Construct the api call url based on the provide information
     this.weather_forecast_url = this.base_url+"/forecast?q="+location+"&appid="+this.api_key;
     
-    let weather_data:any = this._http.get<any>(this.weather_forecast_url).pipe(this.backoff(4, 1000), catchError(this.handleError));
+    let weather_data:any = this._http.get<any>(this.weather_forecast_url).pipe(this.backoff(3, 1000), catchError(this.handleError));
 
     return weather_data;
   }
 
   // Error handling
   handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unknown error!';
+    let errorMessage:any = 'Unknown error!';
     if (error.error instanceof ErrorEvent) {
       // Client-side errors
-      errorMessage = `Error: ${error.error.message}`;
+      // errorMessage = `Error: ${error.error.message}`;
     } else {
       // Server-side errors
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      errorMessage = {'status': error.status, 'message': error.message};
+      // `Error Code: ${error.status}\nMessage: ${error.message}`
     }
-    window.alert(errorMessage);
+    // window.alert(errorMessage);
     return throwError(errorMessage);
   }
 

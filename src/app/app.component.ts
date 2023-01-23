@@ -1,5 +1,7 @@
 import { Component, NgModule } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { interval } from 'rxjs';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 // services
 import {WeatherDataService} from '../services/weather-data.service';
@@ -22,25 +24,56 @@ export class AppComponent {
   public weather_data:any = [];
   public selected_weather:any = [];
   public weather_summary:any = [];
-  public selected_location:any = data_sample.city;
 
   public temp_unit = "C";
   public location = "Johannesburg";
   public weather_msg = "";
   public weather_bg_image = "";
-  
+
+  public errors_msg:string = "";
+  public has_errors:boolean = false;
+  public still_loading:boolean = false;
+
+
+  locationForm = new FormGroup({
+    locationName: new FormControl(this.location),
+  });
+
   constructor(
     private _weather_data_service: WeatherDataService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private fB: FormBuilder
   ){ }
 
   ngOnInit(): void {
     
-    // this.getAllWeatherData();
+    this.getAllWeatherData(this.location);
 
-    /*** 
+    interval(20000 * 60).subscribe(x => {
+      this.getAllWeatherData(this.location);
+    });
+
+  };
+
+  // Change location
+  changeLocation(){
+    this.location = this.locationForm.value.locationName;
+
+    if(this.locationForm.value.locationName == ""){
+      alert("Enter a location")
+    }else{
+      this.getAllWeatherData(this.location);
+    }
+  
+  }
+
+
+
+  // WEATHERE DATA SIMULATION
+  weatherData(){
+     /*** 
      *  SIMUMATED DATA TO AVOID CALLING API
-     * 
+     *  Must comment out for production
     */
     // Compile data properly into new array with needed information
     this.data_sample.list.forEach((item:any) => {
@@ -68,7 +101,6 @@ export class AppComponent {
 
     console.log(this.data_sample);
     console.log(this.weather_data);
-    console.log(this.selected_location);
     console.log(this.selected_weather);
 
     this.weather_data.forEach((element:any) => {
@@ -78,15 +110,12 @@ export class AppComponent {
     /**
      * END
      */
-
-  };
-
+  }
 
   // Group data by date (Array by key)
   groupBy:any = (array:any, key:any) => {
     // Return the end result
     return array.reduce((result:any, currentValue:any) => {
-      // this.myDate = this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
       // If an array already present for key, push it to the array. Else create an array and push the object
       (result[currentValue[key]] = result[currentValue[key]] || []).push(
         currentValue
@@ -105,6 +134,9 @@ export class AppComponent {
       this.selected_weather = this.weather_data[index];
       index = 0;
     }
+
+    console.log(this.selected_weather);
+    
 
     // SET background images based in different conditions
     if(this.selected_weather[index].weather[0].main == "Clear"){
@@ -165,15 +197,12 @@ export class AppComponent {
       temperature = kelvinVal - 273.15;
 
       if(temperature < 15){
-        this.weather_msg = "It's about to get cold, maybe you should grap a jacket.";
+        this.weather_msg = "It's about to get cold, maybe you should grab a jacket.";
       }else if(temperature > 25){
         this.weather_msg = "It's about to get really hot, remember to drink lots of water.";
       }else{
         this.weather_msg = "";
       }
-
-      console.log(temperature);
-      
     }else if(this.temp_unit == "F"){
       temperature = (kelvinVal-273.15)*9/5+32;
     }else{
@@ -195,13 +224,30 @@ export class AppComponent {
   }
 
 
+  // Recall API on try again
+  refreshPage(location:any){
+    this.getAllWeatherData(location);
+    this.location = location;
+
+    this.locationForm.setValue({
+      locationName: location,
+    });
+  }
+
+  
   // Get all Weather Data
-  getAllWeatherData(){
-    this._weather_data_service.getAllWeather(this.location).subscribe({
+  getAllWeatherData(location:any){
+    this.has_errors = false;
+    this.errors_msg = "";
+    this.still_loading = true;
+    
+    this.weather_data = [];
+    this.selected_weather = []; 
+
+    this._weather_data_service.getAllWeather(location).subscribe({
       next: (data:any) => {
       
-      this.selected_location = data.city;
-      
+
       // Compile data properly into new array with needed information
       data.list.forEach((item:any) => {
         this.weather_data.push({
@@ -216,7 +262,8 @@ export class AppComponent {
         })
 
       });
-        
+      
+      // Group data by date
       this.weather_data = this.groupBy(this.weather_data, 'date');
 
       // Convert object to array to loop in html
@@ -227,10 +274,25 @@ export class AppComponent {
       
       this.viewTimeWeather(0, 'day');
 
+      this.has_errors = false;
+      this.errors_msg = "";
+      this.still_loading = false;
+
+      console.log(this.weather_data);
+      console.log(this.selected_weather);
+
       },error: error => {
 
-        alert("Something went wrong");
-        console.log(error);
+
+        this.has_errors = true;
+        this.errors_msg = "Something went wrong, please try again. If the error persist contact support on mekgwele@gmail.com";
+        this.still_loading = false;
+
+        if(error.status == "404"){
+          this.errors_msg = "No data found for your search."
+        }
+        
+
         
       }
 
