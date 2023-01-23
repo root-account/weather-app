@@ -1,66 +1,115 @@
-
+<div class="weather-app" [style.backgroundImage]="weather_bg_image">
+  <div class="header-blur-effect"></div>
 <div class="container">
 
-  <div class="weather-side">
-    <div class="weather-gradient"></div>
-    <div class="date-container">
-      <h2 class="date-dayname">{{weather_summary.weekday }}</h2>
-      <span class="date-day">{{weather_summary.date}} : {{weather_summary.time}}</span>
-      <i class="location-icon" data-feather="map-pin"></i>
-      <span class="location">{{weather_summary.location}}</span>
-    </div>
-    <div class="weather-container"><i class="weather-icon" data-feather="sun"></i>
-      <h1 class="weather-temp">{{weather_summary.temp}}</h1>
-      <h3 class="weather-desc">{{weather_summary.desc}}</h3>
-    </div>
-  </div>
-  
-  <div class="info-side">
-    <div class="today-info-container">
-      <div class="today-info">
-        <!-- <div class="precipitation"> <span class="title">PRECIPITATION</span><span class="value">{{selected_weather.main.temp}} %</span>
-          <div class="clear"></div>
-        </div> -->
-        <div class="humidity"> <span class="title">HUMIDITY</span><span class="value">{{weather_summary.humidity}} %</span>
-          <div class="clear"></div>
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="weather-side">
+        <div class="weather-gradient"></div>
+        <div class="date-container info-container">
+          <img src="{{weather_summary.icon}}" alt="">
+          <h2 class="date-dayname">{{weather_summary.weekday}}</h2>
+          <span class="date-day">{{weather_summary.date}} : {{weather_summary.time}}</span>
+          <i class="location-icon" data-feather="map-pin"></i>
+          <h4 class="location">{{weather_summary.location}}</h4>
+
+          <div class="weather-container"><i class="weather-icon" data-feather="sun"></i>
+            <h1 class="weather-temp">{{weather_summary.temp}}</h1>
+            <h3 class="weather-desc">{{weather_summary.desc}}</h3>
+          </div>
+
         </div>
-        <div class="wind"> <span class="title">WIND</span><span class="value">{{weather_summary.wind}} km/h</span>
-          <div class="clear"></div>
-        </div>
+
       </div>
     </div>
 
+    <div class="col-md-8">
+      <div class="info-side">
+      
+        <div class="today-info-container  info-container">
+          <div class="today-info">
+    
+            <div class="temperature-toggle-container">
 
+              <div class="row inputs">
 
-    <!-- TIME SELECTOR -->
-    <div class="week-container">
-      <ul class="week-list week-times">
-        <li [ngClass]="{'active' : weather?.time == weather_summary?.time}" *ngFor="let weather of selected_weather; index as i" (click)="viewTimeWeather(i)">
-          <!-- <img src="http://openweathermap.org/img/wn/@2x.png" alt=""/> -->
-          <img src="http://openweathermap.org/img/wn/{{weather.weather[0].icon}}@2x.png" alt="">
-          <span class="day-name">{{weather.time}}</span>
-          <span class="day-temp">{{convertTemparature(weather.main.temp)}}°{{temp_unit}}</span>
-        </li>
-        <div class="clear"></div>
-      </ul>
+                <div class="col">
+                  <!-- <small>Enter location:</small> -->
+                  <div class="">
+                    <input type="text" class="form-control" id="locationIpnput" placeholder="Enter location:">
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="temp-toggle">
+                    <a href="#" [ngClass]="{'active' : temp_unit == 'C'}" (click)="switchTempUnit('C')"> °C</a>
+                    <a href="#" [ngClass]="{'active' : temp_unit == 'F'}" (click)="switchTempUnit('F')">°F</a>
+                  </div>
+                </div>
+
+              </div>
+              
+            </div>
+    
+            <!-- <div class="precipitation"> <span class="title">PRECIPITATION</span><span class="value">{{selected_weather.main.temp}} %</span>
+              <div class="clear"></div>
+            </div> -->
+            <div class="humidity"> <span class="title">HUMIDITY</span><span class="value">{{weather_summary.humidity}} %</span>
+              <div class="clear"></div>
+            </div>
+            <div class="wind"> <span class="title">WIND</span><span class="value">{{weather_summary.wind}}</span>
+              <div class="clear"></div>
+            </div>
+    
+    
+          <!-- Weather Message -->
+          <div class="weather-message" *ngIf="weather_msg">
+            <div class="message-container">
+              <p>{{weather_msg}}</p>
+            </div>
+          </div>
+    
+          </div>
+       
+    
+    
+    
+        <!-- TIME SELECTOR -->
+        <div class="week-container times">
+          <ul class="week-list week-times">
+            <li [ngClass]="{'active' : weather?.time == weather_summary?.time}" *ngFor="let weather of selected_weather; index as i" (click)="viewTimeWeather(i, '')">
+              <!-- <img src="http://openweathermap.org/img/wn/@2x.png" alt=""/> -->
+              <img src="http://openweathermap.org/img/wn/{{weather.weather[0].icon}}@2x.png" alt="">
+              <span class="day-name">{{weather.time}}</span>
+              <span class="day-temp">{{convertTemparature(weather.main.temp)}}°{{temp_unit}}</span>
+            </li>
+            <div class="clear"></div>
+          </ul>
+        </div>
+    
+        <!-- WEEKDAY SELECTOR -->
+        <div class="week-container" *ngIf="weather_data">
+          <ul class="week-list">
+            <li [ngClass]="{'active' : weather[0]?.date == weather_summary?.date}" *ngFor="let weather of weather_data; index as i" (click)="viewTimeWeather(i, 'day')">
+              <img src="http://openweathermap.org/img/wn/{{weather[0].weather[0].icon}}@2x.png" alt="">
+              <span class="day-name">{{weather[0].weekday}}</span>
+              <span class="day-temp">{{convertTemparature(weather[0].main.temp)}}°{{temp_unit}}</span>
+            </li>
+            <div class="clear"></div>
+          </ul>
+        </div>
+      
+      </div>
+  
+      </div>
     </div>
 
-    <!-- WEEKDAY SELECTOR -->
-    <div class="week-container" *ngIf="weather_data">
-      <ul class="week-list">
-        {{weather_data[0][0].weekday}}
-        <li [ngClass]="{'active' : weather[0]?.date == weather_summary?.date}" *ngFor="let weather of weather_data; index as i" (click)="viewDayWeather(i)">
-          <img src="http://openweathermap.org/img/wn/{{weather[0].weather[0].icon}}@2x.png" alt="">
-          <span class="day-name">{{weather[0].weekday}}</span>
-          <span class="day-temp">{{convertTemparature(weather[0].main.temp)}}°{{temp_unit}}</span>
-        </li>
-        <div class="clear"></div>
-      </ul>
-    </div>
-
-
-    <div class="location-container">
-      <button class="location-button"> <i data-feather="map-pin"></i><span>Change location</span></button>
-    </div>
   </div>
+
+  
+  
+  
+
+</div>
 </div>
