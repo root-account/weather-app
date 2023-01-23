@@ -92,45 +92,53 @@ export class AppComponent {
   ****************************************/
   viewTimeWeather(index:any, type:any){
 
+    let time_of_day:any;
     // Check if user is clicking on day weather or time weather
     if(type == "day"){
       this.selected_weather = this.weather_data[index];
       index = 0;
     }
+    console.log(this.selected_weather);
+    
+    if(this.selected_weather[index].sys.pod == "n"){
+      time_of_day = "night";
+    }else{
+      time_of_day = "day";
+    }
     
     // SET background images based in different conditions
     if(this.selected_weather[index].weather[0].main == "Clear"){
-      this.weather_bg_image = 'url(../assets/clear.jpeg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/clear.jpeg)`;
     }else if(this.selected_weather[index].weather[0].main == "Drizzle"){
-      this.weather_bg_image = 'url(../assets/drizzle.jpeg)';
+      this.weather_bg_image = `url(../assets/drizzle.jpeg)`;
     }else if(this.selected_weather[index].weather[0].main == "Rain"){
-      this.weather_bg_image = 'url(../assets/rain.jpeg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/rain.jpeg)`;
     }else if(this.selected_weather[index].weather[0].main == "Clouds"){
-      this.weather_bg_image = 'url(../assets/clouds.jpeg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/clouds.jpeg)`;
     }else if(this.selected_weather[index].weather[0].main == "Thunderstorm"){
-      this.weather_bg_image = 'url(../assets/thunder.jpeg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/thunder.jpeg)`;
     }else if(this.selected_weather[index].weather[0].main == "Snow"){
-      this.weather_bg_image = 'url(../assets/snow.webp)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/snow.webp)`;
     }else if(this.selected_weather[index].weather[0].main == "Mist"){
-      this.weather_bg_image = 'url(../assets/mist.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/mist.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Smoke"){
-      this.weather_bg_image = 'url(../assets/smoke.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/smoke.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Haze"){
-      this.weather_bg_image = 'url(../assets/haze.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/haze.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Dust"){
-      this.weather_bg_image = 'url(../assets/dust.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/dust.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Fog"){
-      this.weather_bg_image = 'url(../assets/fog.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/fog.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Sand"){
-      this.weather_bg_image = 'url(../assets/sand.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/sand.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Dust"){
-      this.weather_bg_image = 'url(../assets/dust.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/dust.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Ash"){
-      this.weather_bg_image = 'url(../assets/ash.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/ash.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Squall"){
-      this.weather_bg_image = 'url(../assets/squall.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/squall.jpg)`;
     }else if(this.selected_weather[index].weather[0].main == "Tornado"){
-      this.weather_bg_image = 'url(../assets/tornado.jpg)';
+      this.weather_bg_image = `url(../assets/${time_of_day}/tornado.jpg)`;
     }else{
       this.weather_bg_image = '';
     }
@@ -225,7 +233,8 @@ export class AppComponent {
           'main':item.main,
           'weather': item.weather,
           'wind':item.wind,
-          'clouds': item.clouds
+          'clouds': item.clouds,
+          'sys': item.sys
         })
 
       });
